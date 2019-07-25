@@ -2,7 +2,7 @@ const Graph = require('node-dijkstra');
 
 function boardScore(board, player) {
     if(player === '1')
-        return boardPath(transpose(board)).length - boardPath(board).length;
+            return boardPath(transpose(board)).length - boardPath(board).length;
     else
         return boardPath(board).length - boardPath(transpose(board)).length;
 }
@@ -46,7 +46,6 @@ function boardPath(board) {
 
     route.addNode(player + 'T', neighborsT);
     route.addNode(player + 'X', neighborsX);
-
     return route.path(player + 'T', player + 'X');
 }
 
@@ -106,6 +105,7 @@ function transpose(board) {
             }
         }
     }
+
     return boardT;
 }
 
