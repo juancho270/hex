@@ -1,15 +1,38 @@
 const Graph = require('node-dijkstra');
 
 function boardScore(board, player) {
-    if (boardPath(transpose(board)) === null){
-        return 0;
-    }else{
-        if(player === '1')
-                return boardPath(transpose(board)).length - boardPath(board).length;
-        else
-            return boardPath(board).length - boardPath(transpose(board)).length;
-    }
+	
+	
+	if (boardPath(transpose(board)) === null){
+		
+		return -1
+		
+		
+	} else if (boardPath(board)===null) {
+	
+		return 1
+	
+	} else {
+		
+			if(player === '1'){
+		
+				return boardPath(transpose(board)).length - boardPath(board).length;
+        
+			}else{
+		
+		
+				return boardPath(board).length - boardPath(transpose(board)).length;
+			
+			}
+		
+		}
+	
+				
+	
 }
+
+
+
 
 function boardPath(board) {
     let player = '1';
@@ -22,9 +45,12 @@ function boardPath(board) {
         for (let j = 0; j < size; j++) {
             let key = i * size + j;
             let list = getNeighborhood(key, player, board);
+            
             let neighbors = {};
             list.forEach(x => {
                 neighbors[x + ''] = 1;
+                
+                //console.log("holi",x);
             });
             if (j === 0) { //Add edge to T
                 neighbors[player + 'T'] = 1;
@@ -40,16 +66,21 @@ function boardPath(board) {
     let neighborsX = {};
 
     for (let i = 0; i < size; i++) {
-        if (board[i][0] === 0) {
+		
+		
+        if (board[i][0] === 0 || board[i][0] === '1') {
             neighborsT[(i * size) + ''] = 1;
         }
-        if (board[i][size - 1] === 0) {
+        if (board[i][size - 1] === 0 || board[i][size - 1] === '1') {
             neighborsX[(i * size + size - 1) + ''] = 1;
         }
     }
 
     route.addNode(player + 'T', neighborsT);
     route.addNode(player + 'X', neighborsX);
+    
+    //console.log("ruta:",route)
+
     return route.path(player + 'T', player + 'X');
 }
 
@@ -76,7 +107,7 @@ function getNeighborhood(currentHex, player, board) {
     pushIfAny(result, board, player, row + 1, col - 1);
 
     board[row][col] = currentValue;
-
+	
     return result;
 }
 
@@ -96,6 +127,8 @@ function pushIfAny(result, board, player, row, col) {
  * @param {Array} board 
  */
 function transpose(board) {
+	
+	
     let size = board.length;
     let boardT = new Array(size);
     for (let j = 0; j < size; j++) {
@@ -109,7 +142,8 @@ function transpose(board) {
             }
         }
     }
-
+	
+	
     return boardT;
 }
 

@@ -2,7 +2,7 @@ const Agent = require('ai-agents').Agent;
 
 var Hex = require("./HexGame");
 const Score = require("./BoardScore.js");
-const pila = new Set();
+var pila = [];
 class HexAgent extends Agent {
 
     constructor(value) {
@@ -26,8 +26,14 @@ class HexAgent extends Agent {
         } else if (nTurn == 1){
             return [Math.floor(size / 2), Math.floor(size / 2)];
         }
-        let move = available[agente];
+        
+        alphaBetaPrunedMiniMax(board,true,3,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY,pila)
+        
+        let move = returnmov(pila);
+        
+        
         return [Math.floor (move / board.length), move % board.length];
+        
     }
 	
 	
@@ -41,8 +47,9 @@ module.exports = HexAgent;
 
 ¨*/
 
-function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
-		if ( goalTest(board)) {
+function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta,pilaone){
+		if ( goalTest(board) || depth === 0) {
+			
 	            return getHeuristicScore(board,'1');
 	        }
 	    if (getEmptyHex(board).length !== 0) {
@@ -51,7 +58,14 @@ function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
 	                let movimientos = getEmptyHex(board);
 	                for (let move of movimientos) {
 	                	let updatedBoard = updateBoard(board,[Math.floor (move / board.length), move % board.length],'1');
-	                    bestValue = Math.max(bestValue, alphaBetaPrunedMiniMax(updatedBoard,false, depth-1, alpha,beta));
+	                    
+	                    valore=alphaBetaPrunedMiniMax(updatedBoard,false, depth-1, alpha,beta,pilaone);
+	                    temp=[]
+	                    temp=['max',move]
+	                    
+	                    pilaone.push(temp);
+	                    //console.log(pila);
+	                    bestValue = Math.max(bestValue, valore);
 	                    alpha = Math.max(alpha, bestValue);
 	                    if (beta <= alpha) {
 	                        break;
@@ -63,7 +77,14 @@ function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
 	                let movimientos = getEmptyHex(board);
 	                for (let move of movimientos) {
 	                    let updatedBoard = updateBoard(board,[Math.floor (move / board.length), move % board.length],'2');
-	                    bestValue = Math.min(bestValue, alphaBetaPrunedMiniMax(updatedBoard,true, depth-1, alpha,beta));
+	                    
+	                    valore=alphaBetaPrunedMiniMax(updatedBoard,true, depth-1, alpha,beta,pilaone);
+	                    temp=[]
+	                    temp=['min',move]
+	                    
+	                    pilaone.push(temp);
+	                    //console.log(pila);
+	                    bestValue = Math.min(bestValue, valore);
 	                    beta = Math.min(beta, bestValue);
 	                    if (beta <= alpha) {
 	                        break;
@@ -74,6 +95,8 @@ function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
 	        } else {
 	        	getHeuristicScore(board,'1');
 	        }
+	        
+	       console.log(pilaone)
     }
 
 
@@ -124,10 +147,29 @@ function updateBoard(tablero, action, agentID) {
             let move = available[Math.round(Math.random() * ( available.length -1 ))];
             action[0] = Math.floor (move / board.length);
             action[1] = move % board.length;
+            console.log("move",action)
+            console.log("agente",agentID)
             board[action[0]][action[1]] = agentID;
             return board;
         }
     }
+ 
+ function returnmov(pila){
+	 
+	 for (let punti of pila){
+		 
+		 if (punti[0]==='max'){
+			 
+			 return punti[1];
+			 break
+			 
+		}
+		 
+	}
+	 
+	 
+
+}
 
  function goalTest(tablero) {
         let board = tablero;
@@ -233,5 +275,6 @@ function isEndHex(currentHex, player, size) {
     }
 }
 
-let board = [ [ 0, '1', '2' ], [ '1', 0,0 ], [ 0, 0, 0 ] ];
-console.log(alphaBetaPrunedMiniMax(board,true,5,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY));
+//let board = [ [ 0,'1', 0 ], [ 0,'2',0 ], [ 0, 0, 0 ] ];
+//console.log(alphaBetaPrunedMiniMax(board,true,5,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY,pila));
+//console.log(pila)
