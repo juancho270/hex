@@ -1,10 +1,14 @@
 const Graph = require('node-dijkstra');
 
 function boardScore(board, player) {
-    if(player === '1')
-            return boardPath(transpose(board)).length - boardPath(board).length;
-    else
-        return boardPath(board).length - boardPath(transpose(board)).length;
+    if (boardPath(transpose(board)) === null){
+        return 0;
+    }else{
+        if(player === '1')
+                return boardPath(transpose(board)).length - boardPath(board).length;
+        else
+            return boardPath(board).length - boardPath(transpose(board)).length;
+    }
 }
 
 function boardPath(board) {

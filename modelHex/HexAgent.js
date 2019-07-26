@@ -42,16 +42,14 @@ module.exports = HexAgent;
 ¨*/
 
 function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
-		if (depth === 0 && goalTest(board)) {
-				console.log(board);
+		if ( goalTest(board)) {
 	            return getHeuristicScore(board,'1');
 	        }
 	    if (getEmptyHex(board).length !== 0) {
 	            if (maximizingPlayer) {
 	                var bestValue = Number.NEGATIVE_INFINITY;
 	                let movimientos = getEmptyHex(board);
-	                for (move in movimientos) {
-	                	console.log(board);
+	                for (let move of movimientos) {
 	                	let updatedBoard = updateBoard(board,[Math.floor (move / board.length), move % board.length],'1');
 	                    bestValue = Math.max(bestValue, alphaBetaPrunedMiniMax(updatedBoard,false, depth-1, alpha,beta));
 	                    alpha = Math.max(alpha, bestValue);
@@ -63,8 +61,7 @@ function alphaBetaPrunedMiniMax(board, maximizingPlayer, depth, alpha, beta){
 	                } else {
 	                var bestValue = Number.POSITIVE_INFINITY;
 	                let movimientos = getEmptyHex(board);
-	                for (move in movimientos) {
-	                	console.log(board);
+	                for (let move of movimientos) {
 	                    let updatedBoard = updateBoard(board,[Math.floor (move / board.length), move % board.length],'2');
 	                    bestValue = Math.min(bestValue, alphaBetaPrunedMiniMax(updatedBoard,true, depth-1, alpha,beta));
 	                    beta = Math.min(beta, bestValue);
@@ -115,7 +112,6 @@ function punto(){
 function updateBoard(tablero, action, agentID) {
         let board = tablero;
         let size = board.length;
-        console.log(agentID,"aqui",action[0],action[1]);
         // Check if this is legal move?
         if (action[0] >= 0 && action[0] < size 
             && action[1] >= 0 && action[1] < size
@@ -237,4 +233,5 @@ function isEndHex(currentHex, player, size) {
     }
 }
 
-let board = [ [ 0, '1', 0 ], [ 0, 0,0 ], [ 0, 0, 0 ] ];
+let board = [ [ 0, '1', '2' ], [ '1', 0,0 ], [ 0, 0, 0 ] ];
+console.log(alphaBetaPrunedMiniMax(board,true,5,Number.POSITIVE_INFINITY,Number.NEGATIVE_INFINITY));
